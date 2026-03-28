@@ -131,3 +131,97 @@ def build_cot_prompt(review: str) -> str:
     )
     logger.debug("CoT prompt built successfully")
     return prompt
+
+
+# ── Task 3 Prompts (Multi objective assistant) ─────────────────────────────────────────
+#
+# Design decisions:
+# - 3-field JSON only (stars, key_point, business_response)
+#   Adding a 4th field (sentiment) raises parse failure rate on 8B models as seen previously
+# - Explicit word limits + ban on generic phrases enforced stritcly 
+#   directly raising faithfulness and actionability judge scores
+# - business_response prompt chain: acknowledge → address specifically → invite return
+#   This structure  I believe is what separates a usable response from a normal apology
+
+TASK3_SYSTEM_PROMPT = """You are an expert business analyst for Yelp reviews.
+For each review, provide a structured analysis to help the business owner respond.
+
+STRICT OUTPUT FORMAT — respond with ONLY this JSON, nothing else:
+{
+  "stars": <integer 1-5>,
+  "key_point": "<the single most specific complaint OR compliment from this exact review — include concrete details like item names, wait times, staff names, specific dishes — one sentence, max 25 words>",
+  "business_response": "<professional, empathetic response the owner could post publicly — must directly reference the specific issue in key_point — 2-3 sentences, max 60 words>"
+}
+
+Rules:
+- No markdown, no code fences, no extra text before or after the JSON
+- key_point must name something SPECIFIC: never generic phrases like 'poor service' or 'good food'
+- business_response must use a specific detail from key_point, never a generic apology template
+- business_response tone: acknowledge → address specifically → invite return"""
+
+
+def build_assistant_prompt(review: str) -> str:
+    return (
+        f"Analyze this Yelp review and generate a structured business response:\n\n"
+        f'"{review}"'
+    )
+
+
+# ── Task 3's  LLM as Judge ──────────────────────────────────────────────────────
+#
+# Design decisions:
+# - Three independent dimensions, not a single holistic score
+#   A holistic score hides WHICH dimension fails will be useless for analysis
+# - Rubric anchors defined at 1, 3, 5 explicitly   hoping to reduce judge score variance
+# - overall_verdict is NOT asked from the judge, computed deterministically in Python code in a rules based manner.
+#   (faithfulness>=4 AND actionability>=4 AND tone>=4 -> success)
+#   Removing it from the JSON cuts one more failure point for a small model (hypothesis)
+# - Judge sees: review + key_point + business_response
+#   NOT the true star, trying to avoid anchoring bias in judge scores
+
+JUDGE_SYSTEM_TASK3 = """You are a strict expert evaluator of AI-generated Yelp review analysis.
+
+Score the key_point extraction and business_response on THREE independent dimensions.
+
+STRICT OUTPUT FORMAT — respond with ONLY this JSON:
+{
+  "faithfulness": <1-5>,
+  "faithfulness_reason": "<one sentence>",
+  "actionability": <1-5>,
+  "actionability_reason": "<one sentence>",
+  "tone": <1-5>,
+  "tone_reason": "<one sentence>"
+}
+
+SCORING RUBRICS:
+
+faithfulness (Does key_point accurately reflect the review?):
+  1 = fabricated or completely misrepresents the review
+  3 = correct but generic, could apply to many similar reviews
+  5 = precise, captures the exact core issue with specific details from the review
+
+actionability (Does business_response specifically address the key_point?):
+  1 = generic template with no connection to the actual review content
+  3 = somewhat specific but could apply to similar reviews
+  5 = directly addresses the specific issue, proposes concrete next step
+
+tone (Is business_response professional, empathetic, non-defensive?):
+  1 = rude, dismissive, or defensive in any way
+  3 = professional but flat, generic warmth only
+  5 = empathetic, specific, warm, naturally invites return visit
+
+No markdown, no extra text, strictly only the JSON."""
+
+
+def build_judge_prompt_task3(
+    review: str,
+    key_point: str,
+    business_response: str,
+) -> str:
+    # Note: pred_stars intentionally NOT passed to judge
+    # Avoids anchoring judge scores quality of extraction/response, not star agreement
+    return (
+        f'Review: "{review}"\n\n'
+        f'Extracted key_point: "{key_point}"\n\n'
+        f'Business response: "{business_response}"'
+    )
