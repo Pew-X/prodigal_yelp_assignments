@@ -47,7 +47,7 @@ FEW_SHOT_EXAMPLES = [
 ]
 
 
-# ── Prompt Builders ────────────────────────────────────────────────────────────
+# ── TASK 1 Prompts ────────────────────────────────────────────────────────────
 
 def build_zero_shot_prompt(review: str) -> str:
 
@@ -85,4 +85,49 @@ def build_few_shot_prompt(review: str) -> str:
         f"Output:"
     )
     logger.debug("Few-shot prompt built successfully")
+    return prompt
+
+
+# ── Task 2 Prompts ─────────────────────────────────────────────────────
+
+def build_direct_prompt(review: str) -> str:
+    """
+    Direct strategy: minimal instruction, no reasoning encouraged.
+    """
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input for direct prompt: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    
+    logger.debug(f"Building direct prompt (review length: {len(review)})")
+    prompt = f'Rate this Yelp review on a 1-5 star scale:\n\n"{review}"'
+    logger.debug("Direct prompt built successfully")
+    return prompt
+
+
+def build_cot_prompt(review: str) -> str:
+    """
+    Chain-of-Thought strategy: encourages step-by-step reasoning.
+
+    Output format:
+    {
+      "reasoning": "step-by-step analysis...",
+      "stars": 3,
+      "explanation": "one-sentence summary"
+    }
+    """
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input for CoT prompt: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    
+    logger.debug(f"Building CoT prompt (review length: {len(review)})")
+    prompt = (
+        f'Analyze this Yelp review step by step before rating it.\n\n'
+        f'Review: "{review}"\n\n'
+        f'Think through: (1) specific positive signals, (2) specific negative signals, '
+        f'(3) overall tone and intensity, then decide the star rating.\n\n'
+        f'Output ONLY this JSON:\n'
+        f'{{"reasoning": "<your step-by-step analysis>", "stars": <1-5>, '
+        f'"explanation": "<one sentence summary>"}}'
+    )
+    logger.debug("CoT prompt built successfully")
     return prompt
