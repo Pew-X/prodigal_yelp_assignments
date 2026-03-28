@@ -1,0 +1,12 @@
+{
+  "approach_1_keyword": {
+    "mismatches_detected": 0,
+    "mismatch_rate": 0.0,
+    "verdict": "brittle \u2014 vocabulary mismatch between review language and analytical reasoning"
+  },
+  "approach_2_llm_judge": {
+    "mismatches_detected": 39,
+    "mismatch_rate": 0.196,
+    "total_evaluated": 199
+  }
+}

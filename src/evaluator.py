@@ -13,6 +13,7 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
+from tqdm import tqdm
 
 # Configure logging for this module
 logger = logging.getLogger(__name__)
@@ -164,3 +165,65 @@ def compute_cot_metrics(df: pd.DataFrame) -> dict:
         base["reasoning_mismatch_rate"] = round(n_mismatch / len(valid), 4) if len(valid) > 0 else None
 
     return base
+
+
+def detect_reasoning_mismatch_llm_judge(
+    df: pd.DataFrame,
+    client,  
+) -> pd.DataFrame:
+    """
+    LLM-as-judge consistency checker instead of keyword matching.
+    
+     asks the judge LLM: does this reasoning actually
+    support this star rating for each cot
+    
+    This is Approach 2  contrasted with the brittle keyword heuristic
+    (Approach 1) showcasing a new evaluation for llms being meta evaluators.
+    (using the task 2 cot outputs from csv as inputs to a new LLM judge prompt)
+    """
+    import json
+
+    JUDGE_SYSTEM = """You are an expert evaluator of AI-generated review analysis.
+
+Given a reasoning trace and a star rating (1-5), determine if the reasoning 
+logically supports and is consistent with the star rating.
+
+Respond ONLY with this JSON:
+{"consistent": true/false, "confidence": "high/medium/low", "reason": "<one sentence>"}
+
+Rules:
+- consistent=true if the reasoning's overall sentiment and intensity matches the star rating
+- consistent=false if the reasoning is mostly positive but star is 1-2, or mostly negative but star is 4-5
+- No markdown, no extra text"""
+
+    rows = []
+    cot_rows = df[df["prompt_type"] == "cot"].copy()
+
+    for _, row in tqdm(cot_rows.iterrows(), total=len(cot_rows), desc="LLM Judge"):
+        if pd.isna(row.get("reasoning")) or pd.isna(row.get("pred_stars")):
+            rows.append({**row, "judge_consistent": None,
+                         "judge_reasoning": None, "judge_confidence": None})
+            continue
+
+        user_msg = (
+            f"Reasoning: {row['reasoning']}\n"
+            f"Star rating given: {int(row['pred_stars'])}"
+        )
+        result = client.complete(JUDGE_SYSTEM, user_msg)
+
+        consistent = None
+        judge_reason = None
+        confidence = None
+
+        if result["parsed"]:
+            p = result["parsed"]
+            consistent = p.get("consistent")
+            judge_reason = p.get("reason")
+            confidence = p.get("confidence")
+
+        rows.append({**row,
+                     "judge_consistent": consistent,
+                     "judge_reasoning": judge_reason,
+                     "judge_confidence": confidence})
+
+    return pd.DataFrame(rows)
