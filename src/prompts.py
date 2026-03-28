@@ -161,10 +161,17 @@ Rules:
 
 
 def build_assistant_prompt(review: str) -> str:
-    return (
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input for assistant prompt: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    
+    logger.debug(f"Building Task 3 assistant prompt (review length: {len(review)})")
+    prompt = (
         f"Analyze this Yelp review and generate a structured business response:\n\n"
         f'"{review}"'
     )
+    logger.debug("Task 3 assistant prompt built successfully")
+    return prompt
 
 
 # ── Task 3's  LLM as Judge ──────────────────────────────────────────────────────
@@ -218,10 +225,22 @@ def build_judge_prompt_task3(
     key_point: str,
     business_response: str,
 ) -> str:
-    # Note: pred_stars intentionally NOT passed to judge
-    # Avoids anchoring judge scores quality of extraction/response, not star agreement
-    return (
+    # Validate inputs
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    if not key_point or not isinstance(key_point, str):
+        logger.error(f"Invalid key_point input: {type(key_point)}")
+        raise ValueError("Key point must be a non-empty string")
+    if not business_response or not isinstance(business_response, str):
+        logger.error(f"Invalid business_response input: {type(business_response)}")
+        raise ValueError("Business response must be a non-empty string")
+    
+    logger.debug(f"Building Task 3 judge prompt (review: {len(review)}c, key_point: {len(key_point)}c, response: {len(business_response)}c)")
+    prompt = (
         f'Review: "{review}"\n\n'
         f'Extracted key_point: "{key_point}"\n\n'
         f'Business response: "{business_response}"'
     )
+    logger.debug("Task 3 judge prompt built successfully")
+    return prompt
