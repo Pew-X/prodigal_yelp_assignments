@@ -1,4 +1,8 @@
 import json
+import logging
+
+# Configure logging for this module
+logger = logging.getLogger(__name__)
 
 # System Prompt
 SYSTEM_PROMPT = """You are an expert Yelp review analyst. Classify reviews into star ratings from 1 to 5.
@@ -46,23 +50,39 @@ FEW_SHOT_EXAMPLES = [
 # ── Prompt Builders ────────────────────────────────────────────────────────────
 
 def build_zero_shot_prompt(review: str) -> str:
-    """Zero-shot: instruction + review only."""
-    return f'Classify this Yelp review:\n\n"{review}"'
+
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    
+    logger.debug(f"Building zero-shot prompt (review length: {len(review)})")
+    prompt = f'Classify this Yelp review:\n\n"{review}"'
+    logger.debug("Zero-shot prompt built successfully")
+    return prompt
 
 
 def build_few_shot_prompt(review: str) -> str:
-    """Few-shot: 5 curated examples (1 per star) + target review."""
+
+    if not review or not isinstance(review, str):
+        logger.error(f"Invalid review input: {type(review)}")
+        raise ValueError("Review must be a non-empty string")
+    
+    logger.debug(f"Building few-shot prompt with {len(FEW_SHOT_EXAMPLES)} examples (review length: {len(review)})")
+    
     examples_block = ""
-    for ex in FEW_SHOT_EXAMPLES:
+    for i, ex in enumerate(FEW_SHOT_EXAMPLES):
         examples_block += (
             f'Review: "{ex["review"]}"\n'
             f'Output: {json.dumps(ex["label"])}\n\n'
         )
+        logger.debug(f"Added example {i+1}/{len(FEW_SHOT_EXAMPLES)} (class {ex['label']['stars']})")
 
-    return (
+    prompt = (
         f"Here are examples of correct classifications:\n\n"
         f"{examples_block.strip()}\n\n"
         f"Now classify this review:\n\n"
         f'Review: "{review}"\n'
         f"Output:"
     )
+    logger.debug("Few-shot prompt built successfully")
+    return prompt
