@@ -47,7 +47,7 @@ FEW_SHOT_EXAMPLES = [
 ]
 
 
-# ── Prompt Builders ────────────────────────────────────────────────────────────
+# ── TASK 1 Prompts ────────────────────────────────────────────────────────────
 
 def build_zero_shot_prompt(review: str) -> str:
 
@@ -86,3 +86,34 @@ def build_few_shot_prompt(review: str) -> str:
     )
     logger.debug("Few-shot prompt built successfully")
     return prompt
+
+
+# ── Task 2 Prompts ─────────────────────────────────────────────────────
+
+def build_direct_prompt(review: str) -> str:
+    """
+    Direct strategy: minimal instruction, no reasoning encouraged.
+    """
+    return f'Rate this Yelp review on a 1-5 star scale:\n\n"{review}"'
+
+
+def build_cot_prompt(review: str) -> str:
+    """
+    Chain-of-Thought strategy
+
+    Output format:
+    {
+      "reasoning": "step-by-step analysis...",
+      "stars": 3,
+      "explanation": "one-sentence summary"
+    }
+    """
+    return (
+        f'Analyze this Yelp review step by step before rating it.\n\n'
+        f'Review: "{review}"\n\n'
+        f'Think through: (1) specific positive signals, (2) specific negative signals, '
+        f'(3) overall tone and intensity, then decide the star rating.\n\n'
+        f'Output ONLY this JSON:\n'
+        f'{{"reasoning": "<your step-by-step analysis>", "stars": <1-5>, '
+        f'"explanation": "<one sentence summary>"}}'
+    )

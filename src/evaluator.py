@@ -118,3 +118,49 @@ def print_metrics(metrics: dict, title: str = "") -> None:
     for k, v in metrics.items():
         print(f"  {k:30s}: {v}")
         logger.debug(f"{k}: {v}")
+
+
+# TASK 2 Eval (simple heurestic , seems very brittle with key word matches ):
+def detect_reasoning_mismatch(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Flags cot responses where the reasoning sentiment contradicts the predicted star.
+    
+    heuristic with simple keyword matches
+    """
+    POSITIVE_SIGNALS = ["excellent", "great", "love", "perfect", "outstanding",
+                        "amazing", "wonderful", "best", "fantastic", "enjoyed"]
+    NEGATIVE_SIGNALS = ["terrible", "awful", "horrible", "worst", "disgusting",
+                        "poor", "bad", "never", "disappointed", "rude", "cold"]
+
+    def _check(row):
+        if pd.isna(row.get("reasoning")) or pd.isna(row.get("pred_stars")):
+            return False
+        reasoning = str(row["reasoning"]).lower()
+        star = int(row["pred_stars"])
+
+        pos_count = sum(1 for w in POSITIVE_SIGNALS if w in reasoning)
+        neg_count = sum(1 for w in NEGATIVE_SIGNALS if w in reasoning)
+
+        # Mismatch: reasoning strongly positive but star is 1-2,
+        # or reasoning strongly negative but star is 4-5
+        if pos_count > neg_count + 1 and star <= 2:
+            return True
+        if neg_count > pos_count + 1 and star >= 4:
+            return True
+        return False
+
+    df = df.copy()
+    df["reasoning_mismatch"] = df.apply(_check, axis=1)
+    return df
+
+
+def compute_cot_metrics(df: pd.DataFrame) -> dict:
+    base = compute_metrics(df)
+    
+    if "reasoning_mismatch" in df.columns:
+        valid = df[df["pred_stars"].notna()]
+        n_mismatch = df["reasoning_mismatch"].sum()
+        base["reasoning_mismatch_count"] = int(n_mismatch)
+        base["reasoning_mismatch_rate"] = round(n_mismatch / len(valid), 4) if len(valid) > 0 else None
+
+    return base
