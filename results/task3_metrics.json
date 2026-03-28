@@ -1,0 +1,82 @@
+{
+  "n_generated": 50,
+  "n_judged": 50,
+  "generation_compliance": 1.0,
+  "judge_compliance": 1.0,
+  "star_accuracy": 0.62,
+  "star_macro_f1": 0.6164,
+  "dimensions": {
+    "faithfulness": {
+      "mean": 4.16,
+      "std": 1.057,
+      "median": 5.0,
+      "pct_5": 0.58,
+      "pct_4_5": 0.62,
+      "pct_1_2": 0.02
+    },
+    "actionability": {
+      "mean": 4.54,
+      "std": 0.838,
+      "median": 5.0,
+      "pct_5": 0.76,
+      "pct_4_5": 0.78,
+      "pct_1_2": 0.0
+    },
+    "tone": {
+      "mean": 4.94,
+      "std": 0.24,
+      "median": 5.0,
+      "pct_5": 0.94,
+      "pct_4_5": 1.0,
+      "pct_1_2": 0.0
+    }
+  },
+  "verdict_distribution": {
+    "success": 26,
+    "partial": 24
+  },
+  "quality_by_star_class": {
+    "1": {
+      "faithfulness": 3.8,
+      "actionability": 4.6,
+      "tone": 4.8
+    },
+    "2": {
+      "faithfulness": 4.5,
+      "actionability": 4.3,
+      "tone": 4.9
+    },
+    "3": {
+      "faithfulness": 3.5,
+      "actionability": 4.4,
+      "tone": 5.0
+    },
+    "4": {
+      "faithfulness": 4.6,
+      "actionability": 4.6,
+      "tone": 5.0
+    },
+    "5": {
+      "faithfulness": 4.4,
+      "actionability": 4.8,
+      "tone": 5.0
+    }
+  },
+  "dimension_correlations": {
+    "faithfulness": {
+      "faithfulness": 1.0,
+      "actionability": 0.223,
+      "tone": 0.28
+    },
+    "actionability": {
+      "faithfulness": 0.223,
+      "actionability": 1.0,
+      "tone": 0.469
+    },
+    "tone": {
+      "faithfulness": 0.28,
+      "actionability": 0.469,
+      "tone": 1.0
+    }
+  }
+}
