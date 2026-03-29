@@ -1,0 +1,45 @@
+{
+  "yelp": {
+    "domain": "yelp",
+    "n": 1000,
+    "label_type": "5-class (0-4)",
+    "accuracy": 0.616,
+    "macro_f1": 0.6173,
+    "avg_confidence": 0.7486
+  },
+  "amazon": {
+    "domain": "amazon_polarity",
+    "n": 500,
+    "label_type": "binary\u2192mapped to 1\u2605/5\u2605",
+    "directional_accuracy": 0.842,
+    "exact_accuracy": 0.464,
+    "prediction_distribution": {
+      "0": 101,
+      "1": 124,
+      "2": 55,
+      "3": 84,
+      "4": 136
+    },
+    "avg_confidence": 0.7206
+  },
+  "imdb": {
+    "domain": "imdb",
+    "n": 500,
+    "label_type": "binary\u2192mapped to 1\u2605/5\u2605",
+    "directional_accuracy": 0.742,
+    "exact_accuracy": 0.396,
+    "prediction_distribution": {
+      "0": 115,
+      "1": 157,
+      "2": 62,
+      "3": 59,
+      "4": 107
+    },
+    "avg_confidence": 0.6832
+  },
+  "summary": {
+    "yelp_accuracy": 0.616,
+    "avg_ood_dir_acc": 0.792,
+    "performance_drop": -0.176
+  }
+}

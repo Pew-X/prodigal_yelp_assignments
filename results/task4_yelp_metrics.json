@@ -1,0 +1,23 @@
+{
+  "accuracy": 0.616,
+  "macro_f1": 0.6173,
+  "per_class_f1": {
+    "1": 0.7519,
+    "2": 0.5865,
+    "3": 0.513,
+    "4": 0.554,
+    "5": 0.681
+  },
+  "error_analysis": {
+    "total_errors": 384,
+    "off_by_one": 335,
+    "off_by_two": 39,
+    "off_by_more": 10,
+    "off_by_one_pct": 0.872
+  },
+  "domain": "yelp",
+  "n_samples": 1000,
+  "train_size": 15000,
+  "model": "distilbert-base-uncased",
+  "epochs": 4
+}
