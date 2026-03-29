@@ -1,0 +1,300 @@
+{
+  "n_examples": 20,
+  "threshold": 0.6,
+  "n_llm_fallback": 4,
+  "classifier": {
+    "overall_accuracy": 0.3,
+    "n": 20,
+    "by_type": {
+      "negation_trap": {
+        "correct": 0,
+        "total": 4,
+        "accuracy": 0.0
+      },
+      "sarcasm": {
+        "correct": 0,
+        "total": 4,
+        "accuracy": 0.0
+      },
+      "sentiment_sandwich": {
+        "correct": 0,
+        "total": 4,
+        "accuracy": 0.0
+      },
+      "explicit_mismatch": {
+        "correct": 3,
+        "total": 4,
+        "accuracy": 0.75
+      },
+      "domain_vocabulary": {
+        "correct": 3,
+        "total": 4,
+        "accuracy": 0.75
+      }
+    }
+  },
+  "llm_direct": {
+    "overall_accuracy": 0.7,
+    "n": 20,
+    "by_type": {
+      "negation_trap": {
+        "correct": 3,
+        "total": 4,
+        "accuracy": 0.75
+      },
+      "sarcasm": {
+        "correct": 3,
+        "total": 4,
+        "accuracy": 0.75
+      },
+      "sentiment_sandwich": {
+        "correct": 1,
+        "total": 4,
+        "accuracy": 0.25
+      },
+      "explicit_mismatch": {
+        "correct": 3,
+        "total": 4,
+        "accuracy": 0.75
+      },
+      "domain_vocabulary": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "ensemble": {
+    "overall_accuracy": 0.45,
+    "n": 20,
+    "by_type": {
+      "negation_trap": {
+        "correct": 0,
+        "total": 4,
+        "accuracy": 0.0
+      },
+      "sarcasm": {
+        "correct": 1,
+        "total": 4,
+        "accuracy": 0.25
+      },
+      "sentiment_sandwich": {
+        "correct": 0,
+        "total": 4,
+        "accuracy": 0.0
+      },
+      "explicit_mismatch": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "domain_vocabulary": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "per_example": [
+    {
+      "text_snippet": "I cannot say enough good things about this place. Not once did I leave disappointed, and I can't ima",
+      "adversarial_type": "negation_trap",
+      "true_label": 5,
+      "clf_pred": 1,
+      "llm_pred": 5,
+      "clf_confidence": 0.6978,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "There was nothing wrong with the food that a good chef couldn't fix, nothing about the service that ",
+      "adversarial_type": "negation_trap",
+      "true_label": 2,
+      "clf_pred": 1,
+      "llm_pred": 4,
+      "clf_confidence": 0.754,
+      "clf_correct": false,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "Not bad. Not disappointing. Not what I expected at all \u2014 it was genuinely excellent.",
+      "adversarial_type": "negation_trap",
+      "true_label": 5,
+      "clf_pred": 4,
+      "llm_pred": 5,
+      "clf_confidence": 0.7128,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "I wouldn't say the wait was short, the parking wasn't easy, and the prices aren't cheap \u2014 but the fo",
+      "adversarial_type": "negation_trap",
+      "true_label": 4,
+      "clf_pred": 3,
+      "llm_pred": 4,
+      "clf_confidence": 0.6651,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Oh wonderful, another restaurant that confuses 'artisanal' with 'undercooked'. Truly a culinary reve",
+      "adversarial_type": "sarcasm",
+      "true_label": 1,
+      "clf_pred": 3,
+      "llm_pred": 1,
+      "clf_confidence": 0.4021,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Five stars! Absolutely stunning that they managed to get my order wrong three times in one visit. A ",
+      "adversarial_type": "sarcasm",
+      "true_label": 1,
+      "clf_pred": 5,
+      "llm_pred": 1,
+      "clf_confidence": 0.914,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Remarkable how they've perfected the art of being aggressively mediocre. Not easy to achieve such co",
+      "adversarial_type": "sarcasm",
+      "true_label": 2,
+      "clf_pred": 3,
+      "llm_pred": 1,
+      "clf_confidence": 0.7059,
+      "clf_correct": false,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "I am absolutely thrilled that they got my reservation wrong, lost my table, and then seated me next ",
+      "adversarial_type": "sarcasm",
+      "true_label": 1,
+      "clf_pred": 5,
+      "llm_pred": 1,
+      "clf_confidence": 0.7907,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Great location, friendly staff, and a beautiful space \u2014 but the food poisoning I got kept me bedridd",
+      "adversarial_type": "sentiment_sandwich",
+      "true_label": 1,
+      "clf_pred": 3,
+      "llm_pred": 2,
+      "clf_confidence": 0.843,
+      "clf_correct": false,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "Amazing cocktails, genuinely one of the best I've had. The entree was inedible. But the dessert almo",
+      "adversarial_type": "sentiment_sandwich",
+      "true_label": 2,
+      "clf_pred": 3,
+      "llm_pred": 3,
+      "clf_confidence": 0.7995,
+      "clf_correct": false,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "Friendly service, clean tables, fast seating. The chicken parm had the texture of wet cardboard and ",
+      "adversarial_type": "sentiment_sandwich",
+      "true_label": 2,
+      "clf_pred": 3,
+      "llm_pred": 2,
+      "clf_confidence": 0.6369,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Perfect location, open late, easy to park. Rude staff, wrong order, waited 90 minutes. But hey, the ",
+      "adversarial_type": "sentiment_sandwich",
+      "true_label": 1,
+      "clf_pred": 3,
+      "llm_pred": 2,
+      "clf_confidence": 0.7312,
+      "clf_correct": false,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "I would give this place 5 stars if the food weren't cold, the service weren't glacial, the restrooms",
+      "adversarial_type": "explicit_mismatch",
+      "true_label": 1,
+      "clf_pred": 4,
+      "llm_pred": 1,
+      "clf_confidence": 0.5818,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Deserves zero stars but the app won't let me go that low. So here's one, reluctantly, for managing t",
+      "adversarial_type": "explicit_mismatch",
+      "true_label": 1,
+      "clf_pred": 1,
+      "llm_pred": 1,
+      "clf_confidence": 0.6091,
+      "clf_correct": true,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "My friend who brought me says this is a 4-star place. I disagree: the pasta was cold, the wine was c",
+      "adversarial_type": "explicit_mismatch",
+      "true_label": 2,
+      "clf_pred": 2,
+      "llm_pred": 2,
+      "clf_confidence": 0.858,
+      "clf_correct": true,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Stars: 5/5 for trying. 1/5 for execution. 0/5 for value. I averaged it out and rounded up because th",
+      "adversarial_type": "explicit_mismatch",
+      "true_label": 2,
+      "clf_pred": 2,
+      "llm_pred": 3,
+      "clf_confidence": 0.6566,
+      "clf_correct": true,
+      "llm_correct": false
+    },
+    {
+      "text_snippet": "The acute dysfunction of this establishment's operational cadence creates a suboptimal consumptive e",
+      "adversarial_type": "domain_vocabulary",
+      "true_label": 1,
+      "clf_pred": 1,
+      "llm_pred": 1,
+      "clf_confidence": 0.7538,
+      "clf_correct": true,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Tasting notes: primary flavors of disappointment with secondary notes of overpricing and a long fini",
+      "adversarial_type": "domain_vocabulary",
+      "true_label": 1,
+      "clf_pred": 2,
+      "llm_pred": 1,
+      "clf_confidence": 0.5525,
+      "clf_correct": false,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Net Promoter Score for this venue: firmly in detractor territory. Would not advocate to peers or pro",
+      "adversarial_type": "domain_vocabulary",
+      "true_label": 1,
+      "clf_pred": 1,
+      "llm_pred": 1,
+      "clf_confidence": 0.6269,
+      "clf_correct": true,
+      "llm_correct": true
+    },
+    {
+      "text_snippet": "Phenomenologically speaking, the gestalt of this dining experience coalesced into something I can on",
+      "adversarial_type": "domain_vocabulary",
+      "true_label": 5,
+      "clf_pred": 5,
+      "llm_pred": 5,
+      "clf_confidence": 0.5187,
+      "clf_correct": true,
+      "llm_correct": true
+    }
+  ]
+}
